@@ -1,1 +1,62 @@
-<h1>Here's an updated HTML file.</h1>
+<!-- pubnub references: https://www.pubnub.com/docs/web-javascript/api-reference-publish-and-subscribe -->
+Enter Room Code:
+<div><input id=channel placeholder="Channel" /></div>
+Enter Chat and press enter
+<div><input id=input placeholder="message" /></div>
+Chat Output
+<div id=box></div>
+<script src=https://cdn.pubnub.com/sdk/javascript/pubnub.4.28.2.min.js></script>
+<script> 
+function arrayRemove(arr, value) { 
+    
+    return arr.filter(function(ele){ 
+        return ele != value; 
+    });
+}
+
+(
+    function() {
+        var pubnub = new PubNub({
+            publishKey: 'pub-c-b5bd9a20-65df-491c-aef5-291a6fb065cc',
+            subscribeKey: 'sub-c-6b6a1a6e-4beb-11eb-a73a-1eec528e8f1f'
+        });
+        function $(id) {
+            return document.getElementById(id);
+        }
+        var box = $('box'),
+            input = $('input'),
+            channel = $('channel');
+        pubnub.addListener({
+            message: function(obj) {
+                box.innerHTML = ('' + obj.message).replace(/[<>]/g, '') + '<br>' + box.innerHTML
+            }
+        });
+
+        channel.addEventListener('keyup', function(e) {
+            if ((e.keyCode || e.charCode) === 13) {
+                newChannel = channel.value
+                prev = pubnub.getSubscribedChannels()
+                if (prev.includes(newChannel)) {
+                    unsubChannels = arrayRemove(prev, newChannel)
+                } else {
+                    pubnub.subscribe({
+                        channels: [newChannel]
+                    })
+                    unsubChannels = prev
+                }
+                pubnub.unsubscribe({
+                    channels: unsubChannels
+                })
+            }
+        });
+        input.addEventListener('keyup', function(e) {
+            if ((e.keyCode || e.charCode) === 13) {
+                pubnub.publish({
+                    channel: channel.value,
+                    message: input.value,
+                    x: (input.value = '')
+                });
+            }
+        });
+    })();
+</script>
