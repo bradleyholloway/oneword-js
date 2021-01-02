@@ -36,22 +36,24 @@
 </nav>
 
 <div class="container" id="joinRoom">
-    <div class="row mb-3">
-        <div class="col-4 themed-grid-col">Enter Room Code:</div>
-        <div class="col-4 themed-grid-col">
-            <input id=channel placeholder="Channel" />
+        <div class="form-group">
+            <label for="usr">Room Code:</label>
+            <input id=channel placeholder="room" />
         </div>
-        <div id=currentChannel class="col-4 themed-grid-col"></div>
-    </div>
-    <div class="row">
-    <div class="col-4">Enter Chat and press enter</div>
-    <div class="col-4"><input id=input placeholder="message" /></div>
-    </div>
+        <div class="card">
+            <div id=currentChannel class="card-body"></div>
+        </div>
+        <div class="form-group">
+            <label for="usr">Chat:</label>
+            <input id=input placeholder="message" />
+        </div>
     Chat Output
     <div id=box></div>
 </div>
 
 <script>
+    user = Math.floor(Math.random() * 89999) + 10000
+
     function updatePage(page) {
         if (page==="home") {
             document.getElementById('joinRoom').style.display=''
@@ -62,6 +64,10 @@
         if (page==="host" || page==='') {
             document.getElementById('joinRoom').style.display='none'
         }
+    }
+
+    function packMessage(message) {
+        return user + "," + message
     }
 </script>
 
@@ -90,7 +96,8 @@ function arrayRemove(arr, value) {
             currentChannel = $('currentChannel');
         pubnub.addListener({
             message: function(obj) {
-                box.innerHTML = ('' + obj.message).replace(/[<>]/g, '') + '<br>' + box.innerHTML
+                split = obj.message.split(",");
+                box.innerHTML = (split[0] + ": " + split[1]).replace(/[<>]/g, '') + '<br>' + box.innerHTML
             }
         });
 
@@ -116,7 +123,7 @@ function arrayRemove(arr, value) {
             if ((e.keyCode || e.charCode) === 13) {
                 pubnub.publish({
                     channel: channel.value,
-                    message: input.value,
+                    message: packMessage(input.value),
                     x: (input.value = '')
                 });
             }
