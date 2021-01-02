@@ -1,18 +1,71 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-<!-- pubnub references: https://www.pubnub.com/docs/web-javascript/api-reference-publish-and-subscribe -->
-<div class="row mb-3">
-    <div class="col-4 themed-grid-col">Enter Room Code:</div>
-    <div class="col-4 themed-grid-col">
-        <input id=channel placeholder="Channel" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>One Word Online</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+  .fakeimg {
+    height: 200px;
+    background: #aaa;
+  }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>                        
+        </button>
+        <a class="navbar-brand" href="#home" onclick="updatePage('home')">One Word Online</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li><a href="#host" onclick="updatePage('host')">Host</a></li>
+          <li><a href="#join" onclick="updatePage('join')">Join</a></li>
+        </ul>
+      </div>
     </div>
-    <div id=currentChannel class="col-4 themed-grid-col"></div>
+</nav>
+
+<div class="container" id="joinRoom">
+    <div class="row mb-3">
+        <div class="col-4 themed-grid-col">Enter Room Code:</div>
+        <div class="col-4 themed-grid-col">
+            <input id=channel placeholder="Channel" />
+        </div>
+        <div id=currentChannel class="col-4 themed-grid-col"></div>
+    </div>
+    <div class="row">
+    <div class="col-4">Enter Chat and press enter</div>
+    <div class="col-4"><input id=input placeholder="message" /></div>
+    </div>
+    Chat Output
+    <div id=box></div>
 </div>
-<div class="row">
-<div class="col-4">Enter Chat and press enter</div>
-<div class="col-4"><input id=input placeholder="message" /></div>
-</div>
-Chat Output
-<div id=box></div>
+
+<script>
+    function updatePage(page) {
+        if (page==="home") {
+            document.getElementById('joinRoom').style.display=''
+        }
+        if (page==="join") {
+            document.getElementById('joinRoom').style.display=''
+        }
+        if (page==="host" || page==='') {
+            document.getElementById('joinRoom').style.display='none'
+        }
+    }
+</script>
+
+<!-- pubnub references: https://www.pubnub.com/docs/web-javascript/api-reference-publish-and-subscribe -->
 <script src=https://cdn.pubnub.com/sdk/javascript/pubnub.4.28.2.min.js></script>
 <script> 
 function arrayRemove(arr, value) { 
